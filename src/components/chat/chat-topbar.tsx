@@ -21,7 +21,8 @@ export default function ChatTopbar({}: ChatTopbarProps) {
 
   useEffect(() => {
     let activityTimer: NodeJS.Timeout;
-    socket.on("user-activity", () => {
+    socket.on("user-activity", (userId) => {
+      // if (!selectedUser || parseInt(userId) !== selectedUser.id) return;
       ref.current.textContent = "Typing...";
 
       clearTimeout(activityTimer);

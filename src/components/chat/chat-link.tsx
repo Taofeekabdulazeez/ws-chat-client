@@ -11,6 +11,8 @@ import { buttonVariants } from "../ui/button";
 import { Message } from "@/app/data";
 import { useChatStore } from "@/store/useChatStore";
 import Link from "next/link";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect, useRef } from "react";
 
 type Chat = {
   userId: number;
@@ -31,6 +33,30 @@ type ChatLinkProps = {
 export default function ChatLink({ chat, isCollapsed, index }: ChatLinkProps) {
   const users = useChatStore((state) => state.users);
   const setSelectedUser = useChatStore((state) => state.setSelectedUser);
+  const selectedUser = useChatStore((state) => state.selectedUser);
+  const socket = useAuthStore((state) => state.socket);
+
+  const ref = useRef<HTMLSpanElement>(null!);
+
+  useEffect(() => {
+    let activityTimer: NodeJS.Timeout;
+    // if (selectedUser?.id !== chat.userId) return;
+    socket.on("user-activity", (userId) => {
+      console.log("user typing", userId);
+      if (!ref.current) return;
+      if (parseInt(userId) !== chat.userId) return;
+      ref.current.textContent = "Typing...";
+
+      clearTimeout(activityTimer);
+      activityTimer = setTimeout(() => {
+        ref.current.textContent = "";
+      }, 2000);
+    });
+
+    return () => {
+      socket.off("user-activity");
+    };
+  });
 
   if (chat.isAuthUser) return null;
   return isCollapsed ? (
@@ -87,6 +113,7 @@ export default function ChatLink({ chat, isCollapsed, index }: ChatLinkProps) {
       </Avatar>
       <div className="flex flex-col max-w-28">
         <span>{chat.name}</span>
+        <span ref={ref} className="text-green-500 text-xs truncate"></span>
         {chat.messages.length > 0 && (
           <span className="text-zinc-300 text-xs truncate ">
             {chat.messages[chat.messages.length - 1].name.split(" ")[0]}:{" "}
