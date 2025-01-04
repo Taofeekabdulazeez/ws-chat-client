@@ -55,13 +55,12 @@ export default function ChatBottombar({ isMobile }: ChatBottombarProps) {
   // }, [socket, message]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    socket.emit("user-typing");
+    // socket.emit("user-typing");
   };
 
   // let typingTimeout: any;
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
-    socket.emit("user-typing", String(selectedUserId));
   };
   const handleThumbsUp = () => {
     sendMessage("👍");
@@ -90,6 +89,7 @@ export default function ChatBottombar({ isMobile }: ChatBottombarProps) {
       event.preventDefault();
       setMessage((prev) => prev + "\n");
     }
+    socket.emit("user-typing", String(selectedUserId));
   };
 
   return (

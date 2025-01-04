@@ -16,6 +16,8 @@ import { DotsVerticalIcon, HeartIcon, Share1Icon } from "@radix-ui/react-icons";
 import { Forward, Heart } from "lucide-react";
 import { useChatStore } from "@/store/useChatStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import MessageLoading from "../ui/chat/message-loading";
+import ChatTypingIndicator from "./chat-typing-indicator";
 
 interface ChatListProps {
   isMobile: boolean;
@@ -50,6 +52,13 @@ export function ChatList({ isMobile }: ChatListProps) {
         messagesContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const scrollTobottom = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  };
 
   const actionIcons = [
     { icon: DotsVerticalIcon, type: "More" },
@@ -116,9 +125,13 @@ export function ChatList({ isMobile }: ChatListProps) {
                     ))}
                   </ChatBubbleActionWrapper>
                 </ChatBubble>
+                {index === messages.length - 1 && (
+                  <ChatTypingIndicator scroll={scrollTobottom} />
+                )}
               </motion.div>
             );
           })}
+          {/* <ChatTypingIndicator scroll={scrollTobottom} /> */}
         </AnimatePresence>
       </ChatMessageList>
       <ChatBottombar isMobile={isMobile} />
