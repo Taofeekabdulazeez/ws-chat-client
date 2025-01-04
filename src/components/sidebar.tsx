@@ -3,14 +3,15 @@
 import { useChatStore } from "@/store/useChatStore";
 import ChatSidebarHeader from "./chat/chat-sidebar-header";
 import { ChatNavList } from "./chat/chat-nav-list";
+import { useLayoutStore } from "@/store/useLayoutStore";
 
 interface SidebarProps {
   isCollapsed: boolean;
   onClick?: () => void;
-  isMobile: boolean;
 }
 
-export function Sidebar({ isCollapsed, isMobile }: SidebarProps) {
+export function Sidebar({ isCollapsed }: SidebarProps) {
+  const isMobile = useLayoutStore((state) => state.isMobile);
   const users = useChatStore((state) => state.users);
 
   return (

@@ -17,48 +17,21 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ChatInput } from "../ui/chat/chat-input";
 import { useChatStore } from "@/store/useChatStore";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useLayoutStore } from "@/store/useLayoutStore";
 
-interface ChatBottombarProps {
-  isMobile: boolean;
-}
+interface ChatBottombarProps {}
 
 export const BottombarIcons = [{ icon: FileImage }, { icon: Paperclip }];
 
-export default function ChatBottombar({ isMobile }: ChatBottombarProps) {
+export default function ChatBottombar({}: ChatBottombarProps) {
+  const isMobile = useLayoutStore((state) => state.isMobile);
   const [message, setMessage] = useState("");
-  const [isUserTyping, setSelectedUserTyping] = useState(false);
   const selectedUserId = useChatStore((state) => state.selectedUser.id);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [isLoading, setisLoading] = useState(false);
   const sendMessage = useChatStore((state) => state.sendMessage);
-  const subscribeUserActivity = useChatStore(
-    (state) => state.subscribeUserActivity
-  );
-  const unsubscribeFromUserActivity = useChatStore(
-    (state) => state.unsubscribeFromUserActivity
-  );
-
   const socket = useAuthStore((state) => state.socket);
-  const typingTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
 
-  // useEffect(() => {
-  //   let timeout: NodeJS.Timeout;
-  //   if (message) {
-  //     timeout = setTimeout(() => {
-  //       socket.emit("user-typing", () => console.log("Typing.."));
-  //     }, 3000);
-  //   }
-
-  //   return () => {
-  //     clearTimeout(timeout);
-  //   };
-  // }, [socket, message]);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // socket.emit("user-typing");
-  };
-
-  // let typingTimeout: any;
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
   };
@@ -81,7 +54,6 @@ export default function ChatBottombar({ isMobile }: ChatBottombarProps) {
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      // sendMessage(message);
       handleSend();
     }
 

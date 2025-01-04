@@ -9,6 +9,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Sidebar } from "../sidebar";
 import { Chat } from "./chat";
+import { useLayoutStore } from "@/store/useLayoutStore";
 
 interface ChatLayoutProps {
   defaultLayout: number[] | undefined;
@@ -22,7 +23,7 @@ export function ChatLayout({
   navCollapsedSize,
 }: ChatLayoutProps) {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed);
-  const [isMobile, setIsMobile] = useState(false);
+  const { isMobile, setIsMobile } = useLayoutStore();
 
   return (
     <ResizablePanelGroup
@@ -57,11 +58,11 @@ export function ChatLayout({
             "min-w-[50px] md:min-w-[70px] transition-all duration-300 ease-in-out"
         )}
       >
-        <Sidebar isCollapsed={isCollapsed || isMobile} isMobile={isMobile} />
+        <Sidebar isCollapsed={isCollapsed || isMobile} />
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-        <Chat isMobile={isMobile} />
+        <Chat />
       </ResizablePanel>
     </ResizablePanelGroup>
   );

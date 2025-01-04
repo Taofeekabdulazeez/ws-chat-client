@@ -6,12 +6,15 @@ import {
 } from "../ui/chat/chat-bubble";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
+import { motion } from "framer-motion";
 
 type ChatTypingIndicatorProps = {
+  index: number;
   scroll?: () => void;
 };
 
 export default function ChatTypingIndicator({
+  index,
   scroll,
 }: ChatTypingIndicatorProps) {
   const [isRecepientTyping, setIsRecepientTyping] = useState(false);
@@ -22,12 +25,11 @@ export default function ChatTypingIndicator({
     let activityTimer: NodeJS.Timeout;
     scroll?.();
     socket.on("user-activity", (userId) => {
-      // if (!selectedUser || parseInt(userId) !== selectedUser.id) return;
+      if (parseInt(userId) !== selectedUser?.id) return;
       setIsRecepientTyping(true);
 
       clearTimeout(activityTimer);
       activityTimer = setTimeout(() => {
-        // ref.current.textContent = "Online";
         setIsRecepientTyping(false);
       }, 2000);
     });
@@ -40,12 +42,31 @@ export default function ChatTypingIndicator({
   if (!isRecepientTyping) return null;
 
   return (
-    <ChatBubble variant="received">
-      <ChatBubbleAvatar
-        src={selectedUser.avatar}
-        fallback={selectedUser.avatar}
-      />
-      <ChatBubbleMessage isLoading />
-    </ChatBubble>
+    <motion.div
+      key={index}
+      layout
+      initial={{ opacity: 0, scale: 1, y: 50, x: 0 }}
+      animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+      exit={{ opacity: 0, scale: 1, y: 1, x: 0 }}
+      transition={{
+        opacity: { duration: 0.1 },
+        layout: {
+          type: "spring",
+          bounce: 0.3,
+          duration: index * 0.05 + 0.2,
+        },
+      }}
+      style={{ originX: 0.5, originY: 0.5 }}
+      className="flex flex-col gap-2 p-4"
+    >
+      <ChatBubble variant="received">
+        <ChatBubbleAvatar
+          className="animate-pulse"
+          src={selectedUser.avatar}
+          fallback={selectedUser.avatar}
+        />
+        <ChatBubbleMessage isLoading />
+      </ChatBubble>
+    </motion.div>
   );
 }
