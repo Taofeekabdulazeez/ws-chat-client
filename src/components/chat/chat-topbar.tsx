@@ -8,6 +8,7 @@ import { buttonVariants } from "../ui/button";
 import { ExpandableChatHeader } from "../ui/chat/expandable-chat";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useChatStore } from "@/store/useChatStore";
+import { getLastSeenMessage } from "@/lib/utils";
 
 interface ChatTopbarProps {}
 
@@ -54,7 +55,9 @@ export default function ChatTopbar({}: ChatTopbarProps) {
             {onlineUsers.includes(String(selectedUser.id)) ? (
               <span ref={ref}>Online</span>
             ) : (
-              `Active 2 mins ago`
+              <span>{`${getLastSeenMessage(
+                new Date(selectedUser.lastLogin)
+              )}`}</span>
             )}
           </span>
         </div>

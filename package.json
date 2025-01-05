@@ -24,6 +24,7 @@
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "date-fns": "^4.1.0",
     "emoji-mart": "^5.5.2",
     "framer-motion": "^10.18.0",
     "geist": "^1.2.1",
