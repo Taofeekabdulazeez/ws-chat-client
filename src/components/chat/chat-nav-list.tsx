@@ -7,7 +7,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import ChatLink from "./chat-link";
 
 interface Chat {
-  userId: number;
+  userId: string;
   name: string;
   messages: Message[];
   isAuthUser: boolean;
@@ -33,11 +33,12 @@ export function ChatNavList({ isCollapsed }: ChatNavListProps) {
       users.map((user) => ({
         userId: user.id,
         isAuthUser: user.id == authUser?.id,
-        name: user.name,
+        name: user.fullName,
         messages: [],
         avatar: user.avatar,
-        isOnline: onlineUsers.includes(String(user.id)),
-        variant: selectedUser?.name === user.name ? "secondary" : "ghost",
+        isOnline: onlineUsers.includes(user.id),
+        variant:
+          selectedUser?.fullName === user.fullName ? "secondary" : "ghost",
       })),
     [selectedUser, onlineUsers, users, authUser]
   );

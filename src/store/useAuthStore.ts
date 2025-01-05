@@ -8,7 +8,13 @@ function wait(secs: number = 3000) {
   return new Promise((resolve) => setTimeout(resolve, secs));
 }
 
-type User = { id: number; name: string; avatar: string };
+type User = {
+  id: string;
+  email: string;
+  fullName: string;
+  avatar: string;
+  lastLogin: Date;
+};
 
 interface AuthStore {
   isUpdatingProfile: boolean;
@@ -61,7 +67,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   login: async (data) => {
     set({ isLoggingIn: true });
-    const response = await axios.post(`${BASE_URL}/auth/login`, data);
+    const response = await axios.post(`${BASE_URL}/auth/signin`, data);
     const { data: user } = response.data;
     console.log(user);
     try {

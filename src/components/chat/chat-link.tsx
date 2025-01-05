@@ -15,7 +15,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useRef } from "react";
 
 type Chat = {
-  userId: number;
+  userId: string;
   name: string;
   messages: Message[];
   isAuthUser: boolean;
@@ -44,7 +44,7 @@ export default function ChatLink({ chat, isCollapsed, index }: ChatLinkProps) {
     socket.on("user-activity", (userId) => {
       console.log("user typing", userId);
       if (!ref.current) return;
-      if (parseInt(userId) !== chat.userId) return;
+      if (userId !== chat.userId) return;
       ref.current.textContent = "Typing...";
 
       clearTimeout(activityTimer);

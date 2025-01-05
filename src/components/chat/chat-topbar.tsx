@@ -22,7 +22,7 @@ export default function ChatTopbar({}: ChatTopbarProps) {
   useEffect(() => {
     let activityTimer: NodeJS.Timeout;
     socket.on("user-activity", (userId) => {
-      if (parseInt(userId) !== selectedUser?.id) return;
+      if (userId !== selectedUser?.id) return;
       ref.current.textContent = "Typing...";
 
       clearTimeout(activityTimer);
@@ -42,14 +42,14 @@ export default function ChatTopbar({}: ChatTopbarProps) {
         <Avatar className="flex justify-center items-center">
           <AvatarImage
             src={selectedUser.avatar}
-            alt={selectedUser.name}
+            alt={selectedUser.fullName}
             width={6}
             height={6}
             className="w-10 h-10 "
           />
         </Avatar>
         <div className="flex flex-col">
-          <span className="font-medium">{selectedUser.name}</span>
+          <span className="font-medium">{selectedUser.fullName}</span>
           <span className="text-xs">
             {onlineUsers.includes(String(selectedUser.id)) ? (
               <span ref={ref}>Online</span>

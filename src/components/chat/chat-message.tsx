@@ -33,8 +33,10 @@ export default function ChatMessage({ index, message }: ChatMessageProps) {
   const messageOwner =
     message.senderId === selectedUser.id ? selectedUser : authUser;
   const variant = getMessageVariant(
-    message.senderId === selectedUser.id ? selectedUser.name : authUser?.name!,
-    selectedUser.name
+    message.senderId === selectedUser.id
+      ? selectedUser.fullName
+      : authUser?.fullName!,
+    selectedUser.fullName
   );
 
   return (

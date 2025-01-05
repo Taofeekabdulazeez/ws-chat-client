@@ -25,7 +25,7 @@ export default function ChatTypingIndicator({
     let activityTimer: NodeJS.Timeout;
     scroll?.();
     socket.on("user-activity", (userId) => {
-      if (parseInt(userId) !== selectedUser?.id) return;
+      if (userId !== selectedUser?.id) return;
       setIsRecepientTyping(true);
 
       clearTimeout(activityTimer);

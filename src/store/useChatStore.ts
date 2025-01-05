@@ -12,7 +12,13 @@ type Message = {
   timestamp: Date;
 };
 
-type User = { id: number; name: string; avatar: string; isTyping: boolean };
+type User = {
+  id: string;
+  email: string;
+  fullName: string;
+  avatar: string;
+  lastLogin: Date;
+};
 
 interface ChatStore {
   messages: Message[];
@@ -20,7 +26,6 @@ interface ChatStore {
   selectedUser: User;
   isUsersLoading: boolean;
   isMessagesLoading: boolean;
-  isSelectedUserTying: boolean;
 
   getUsers: () => Promise<any>;
   getMessages: () => Promise<any>;
@@ -28,7 +33,6 @@ interface ChatStore {
   subscribeToMessages: () => any;
   unsubscribeFromMessages: () => any;
   setSelectedUser: (user: User) => any;
-  setSelectedUserTyping: (x: boolean) => any;
   subscribeUserActivity: () => void;
   unsubscribeFromUserActivity: () => void;
 }
@@ -39,12 +43,6 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
   selectedUser: null!,
   isUsersLoading: false,
   isMessagesLoading: false,
-  isSelectedUserTying: false,
-  setSelectedUserTyping: (x: boolean) =>
-    set({
-      isSelectedUserTying: x,
-      selectedUser: { ...get().selectedUser, isTyping: x },
-    }),
 
   getUsers: async () => {
     set({ isUsersLoading: true });
@@ -122,14 +120,12 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
     console.log("exe");
     socket.on("user-activity", (data) => {
       console.log(data);
-      set({ isSelectedUserTying: true });
-      // set({ selectedUser: { ...get().selectedUser, isTyping: true } });
     });
   },
 
   unsubscribeFromUserActivity: () => {
     const socket = useAuthStore.getState().socket;
-    socket.off("user-activity", () => set({ isSelectedUserTying: false }));
+    // socket.off("user-activity", () => set({ isSelectedUserTying: false }));
     // socket.off("user-activity", () => {
     //   set({ selectedUser: { ...get().selectedUser, isTyping: false } });
     // });
