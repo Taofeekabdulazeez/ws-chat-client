@@ -55,6 +55,8 @@ export default function ChatBottombar({}: ChatBottombarProps) {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       handleSend();
+
+      return;
     }
 
     if (event.key === "Enter" && event.shiftKey) {

@@ -31,7 +31,7 @@ export default function ChatTypingIndicator({
       clearTimeout(activityTimer);
       activityTimer = setTimeout(() => {
         setIsRecepientTyping(false);
-      }, 2000);
+      }, 3000);
     });
 
     return () => {

@@ -60,14 +60,17 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
   getMessages: async () => {
     set({ isMessagesLoading: true });
     try {
-      const senderId = Number(useAuthStore.getState().authUser?.id);
+      const senderId = useAuthStore.getState().authUser?.id;
       const receiverId = get().selectedUser.id;
 
       const res = await axios.get(
         `${BASE_URL}/messages/${senderId}/chat/${receiverId}`
       );
 
+      console.log({ senderId, receiverId });
+
       const { data: messages } = res.data;
+      console.log(messages);
       set({ messages });
     } catch (error) {
       console.log(error);
@@ -77,20 +80,13 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
   },
 
   sendMessage: async (text) => {
-    const { selectedUser, messages } = get();
+    const selectedUser = get().selectedUser;
     const messageData = {
       text,
       senderId: useAuthStore.getState().authUser?.id,
       receiverId: selectedUser.id,
     };
     useAuthStore.getState().socket?.emit("new-message", messageData);
-    // set({ messages: [...messages, messageData] });
-    // try {
-    //   const res = await axios.post(`${BASE_URL}/messages`, messageData);
-    //   const { data: message } = res.data;
-    // } catch (error) {
-    //   console.log(error);
-    // }
   },
 
   subscribeToMessages: () => {
@@ -100,10 +96,6 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
     const socket = useAuthStore.getState().socket;
 
     socket.on("chat-update", (newMessage) => {
-      // const isMessageSentFromSelectedUser =
-      //   newMessage.senderId === selectedUser.id;
-      // if (!isMessageSentFromSelectedUser) return;
-
       set({
         messages: [...get().messages, newMessage],
       });
