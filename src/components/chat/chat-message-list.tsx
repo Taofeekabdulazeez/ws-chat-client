@@ -3,7 +3,6 @@ import { AnimatePresence } from "framer-motion";
 import { ChatMessageList as ChatMessageListContainer } from "../ui/chat/chat-message-list";
 import { useChatStore } from "@/store/useChatStore";
 import ChatMessage from "./chat-message";
-import { useLayoutStore } from "@/store/useLayoutStore";
 import ChatTypingIndicator from "./chat-typing-indicator";
 
 interface ChatListProps {}

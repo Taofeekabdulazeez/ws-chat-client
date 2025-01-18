@@ -35,8 +35,10 @@ export default function ChatLink({ chat, isCollapsed, index }: ChatLinkProps) {
   const setSelectedUser = useChatStore((state) => state.setSelectedUser);
   const selectedUser = useChatStore((state) => state.selectedUser);
   const socket = useAuthStore((state) => state.socket);
+  console.log(chat);
 
   const ref = useRef<HTMLSpanElement>(null!);
+  const lastMessageRef = useRef<HTMLSpanElement>(null!);
 
   useEffect(() => {
     let activityTimer: NodeJS.Timeout;
@@ -46,10 +48,14 @@ export default function ChatLink({ chat, isCollapsed, index }: ChatLinkProps) {
       if (!ref.current) return;
       if (userId !== chat.userId) return;
       ref.current.textContent = "Typing...";
+      lastMessageRef.current.style.display = "none";
+      // ref.current.classList.add("text-green-500");
 
       clearTimeout(activityTimer);
       activityTimer = setTimeout(() => {
         ref.current.textContent = "";
+        lastMessageRef.current.style.display = "block";
+        // ref.current.classList.remove("text-green-500");
       }, 2000);
     });
 
@@ -113,15 +119,24 @@ export default function ChatLink({ chat, isCollapsed, index }: ChatLinkProps) {
       </Avatar>
       <div className="flex flex-col max-w-28">
         <span>{chat.name}</span>
-        <span ref={ref} className="text-green-500 text-xs truncate"></span>
-        {chat.messages.length > 0 && (
+        <span ref={ref} className="text-xs truncate text-green-500"></span>
+        <span
+          ref={lastMessageRef}
+          className="text-muted-foreground text-xs truncate"
+        >
+          Hello, How are you doing?
+        </span>
+        <span className="h-4 w-4 absolute right-4 bottom-4 bg-green-500 flex items-center justify-center rounded-full text-green-100 text-xs">
+          2
+        </span>
+        {/* {chat.messages.length > 0 && (
           <span className="text-zinc-300 text-xs truncate ">
             {chat.messages[chat.messages.length - 1].name.split(" ")[0]}:{" "}
             {chat.messages[chat.messages.length - 1].isLoading
               ? "Typing..."
               : chat.messages[chat.messages.length - 1].message}
           </span>
-        )}
+        )} */}
       </div>
     </Link>
   );

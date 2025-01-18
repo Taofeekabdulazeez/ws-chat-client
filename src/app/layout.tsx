@@ -5,8 +5,8 @@ import { cookies } from "next/headers";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
-  title: "Shadcn Chat",
-  description: "Chat/message components for Shadcn",
+  title: "Ws Chat",
+  description: "A chat app built using web socket.io",
 };
 
 export const viewport = {
