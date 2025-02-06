@@ -12,7 +12,7 @@ export default function ChatListItem({ id, isCollapsed }: ChatLinkProps) {
 
   if (isChatLoading && !chat) return <div>Loading...</div>;
 
-  if (!isChatLoading && !chat) return <div>No chat</div>;
+  if (!isChatLoading && !chat?.messages?.length) return null;
 
   return isCollapsed ? (
     <ChatLinkItemMobile chat={chat!} />

@@ -67,7 +67,7 @@ const ChatBubbleAvatar: React.FC<ChatBubbleAvatarProps> = ({
 }) => (
   <Avatar className={className}>
     {/* TODO */}
-    <AvatarImage src={"profile.png"} alt="Avatar" />
+    <AvatarImage src={"/profile.png"} alt="Avatar" />
     <AvatarFallback>{fallback}</AvatarFallback>
   </Avatar>
 );

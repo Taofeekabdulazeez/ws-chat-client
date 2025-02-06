@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { MoreHorizontal, SquarePen } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "../common/mode-toggle";
+import { NewChatDialog } from "./new-chat-dialog";
 
 type ChatSidebarHeaderProps = {
   isCollapsed: boolean;
@@ -31,16 +32,7 @@ export default function ChatSidebarHeader({
         >
           <MoreHorizontal size={20} />
         </Link>
-
-        <Link
-          to="#"
-          className={cn(
-            buttonVariants({ variant: "ghost", size: "icon" }),
-            "h-9 w-9"
-          )}
-        >
-          <SquarePen size={20} />
-        </Link>
+        <NewChatDialog />
 
         <ModeToggle />
       </div>
