@@ -7,6 +7,9 @@ import { format, isToday } from "date-fns";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useMessageNotificationSubscription } from "@/hooks/useMessageNotificationSubscription";
 import { useChatActivitySubscription } from "@/hooks/useChatActivitySubscription";
+import { useMemo } from "react";
+import { CheckCheck } from "lucide-react";
+import clsx from "clsx";
 
 type ChatLinkItemProps = {
   chat: Chat;
@@ -20,6 +23,10 @@ export function ChatLinkItem({ chat }: ChatLinkItemProps) {
   console.log(messages);
   const authUser = useAuthStore((state) => state.authUser);
   const lastChatMessage = messages[chat?.messages.length - 1];
+  const numberOfUnreadMessages = useMemo(
+    () => messages.filter((message) => !message.isRead).length,
+    [messages]
+  );
 
   return (
     <NavLink
@@ -47,23 +54,37 @@ export function ChatLinkItem({ chat }: ChatLinkItemProps) {
           className="text-muted-foreground text-xs truncate"
         >
           <span>
-            {lastChatMessage?.senderId === authUser?.id ? "You: " : null}
+            {lastChatMessage?.senderId === authUser?.id ? (
+              <CheckCheck
+                size={14}
+                className={clsx("inline-block mr-0.5", {
+                  "stroke-blue-500 dark:stroke-blue-300":
+                    lastChatMessage.isRead,
+                })}
+              />
+            ) : null}
           </span>
           {lastChatMessage?.text}
         </span>
-        <span className="absolute right-4 bottom-9 text-xs text-green-500 lowercase">
-          {formatLastMessageDate(new Date(lastChatMessage!.timestamp))}
-        </span>
-        <span className="h-4 w-4 absolute right-8 bottom-4 bg-green-500 flex items-center justify-center rounded-full text-green-100 text-xs">
-          2
-        </span>
+        {
+          <span className="absolute right-4 bottom-9 text-xs text-green-500 lowercase">
+            {formatLastMessageDate(new Date(lastChatMessage!.timestamp))}
+          </span>
+        }
+        {numberOfUnreadMessages && (
+          <span className="h-4 w-4 absolute right-8 bottom-4 bg-green-500 flex items-center justify-center rounded-full text-green-100 text-xs">
+            {numberOfUnreadMessages}
+          </span>
+        )}
       </div>
     </NavLink>
   );
 }
 
 function formatLastMessageDate(date: Date) {
-  const output = isToday(date) ? format(date, "h:mma") : date.toDateString();
+  const output = isToday(date)
+    ? format(date, "h:mma")
+    : date.toLocaleDateString();
 
   return output;
 }

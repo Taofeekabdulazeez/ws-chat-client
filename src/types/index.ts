@@ -5,6 +5,8 @@ export type Message = {
   text: string;
   timestamp: Date;
   chatId: string;
+  isRead: boolean;
+  isDelivered: boolean;
 };
 
 export type User = {
