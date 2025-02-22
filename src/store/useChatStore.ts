@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { useAuthStore } from "./useAuthStore";
-import { Message } from "@/types";
+import { Chat, Message } from "@/types";
 
 interface ChatStore {
+  selectedChat: Chat;
+  setSelectedChat: (chat: Chat) => void;
   sendMessage: (text: Partial<Message>) => Promise<any>;
   subscribeToMessages: () => any;
   unsubscribeFromMessages: () => any;
@@ -11,7 +13,11 @@ interface ChatStore {
   unsubscribeFromUserActivity: () => void;
 }
 
-export const useChatStore = create<ChatStore>()(() => ({
+export const useChatStore = create<ChatStore>()((set) => ({
+  selectedChat: null!,
+
+  setSelectedChat: (chat) => set({ selectedChat: chat }),
+
   sendMessage: async (messageData) => {
     // const { recipient, id } = get().selectedChat;
     useAuthStore.getState().socket?.emit("new-message", messageData);

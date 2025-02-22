@@ -19,7 +19,7 @@ export function useMessageNotificationSubscription(chat: Chat) {
   );
 
   useEffect(() => {
-    socket.on("chat-update", (newMessage) => {
+    socket.on(`chat-update/${chat.id}`, (newMessage) => {
       console.log("New notification message", newMessage);
       console.log("Chat ID", chat.id);
       queryClient.setQueryData([`chats/${chat.id}`], (oldChat: Chat) => {
@@ -36,7 +36,7 @@ export function useMessageNotificationSubscription(chat: Chat) {
     });
 
     return () => {
-      socket.off("chat-update");
+      socket.off(`chat-update/${chat.id}`);
     };
   }, [handleMessagesUpdate, socket, queryClient, chat]);
 

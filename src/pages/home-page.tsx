@@ -14,12 +14,18 @@ import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
   const [email, setEmail] = useState("taofeek@gmail.com");
+  const [error, setError] = useState<string | null>(null);
   const { login, isLoggingIn } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    login({ email }).then(() => navigate("/chat"));
+    try {
+      setError(null);
+      login({ email }).then(() => navigate("/chat"));
+    } catch (error: Error | any) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -61,6 +67,7 @@ export default function HomePage() {
               )}
             </Button>
           </form>
+          {error && <span>{error}</span>}
         </CardContent>
       </Card>
     </div>

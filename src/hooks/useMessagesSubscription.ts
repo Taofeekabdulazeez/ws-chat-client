@@ -11,6 +11,7 @@ export function useMessagesSubscription() {
 
   const handleMessagesUpdate = useCallback(
     (newMessage: Message) => {
+      // if (newMessage.chatId !== selectedChat.id) return;
       console.log("New message", newMessage);
       queryClient.invalidateQueries({
         queryKey: [`chats/${selectedChat.id}`],
@@ -20,10 +21,12 @@ export function useMessagesSubscription() {
   );
 
   useEffect(() => {
-    socket.on("chat-update", (newMessage) => handleMessagesUpdate(newMessage));
+    socket.on(`chat-update/${selectedChat.id}`, (newMessage) =>
+      handleMessagesUpdate(newMessage)
+    );
 
     return () => {
-      socket.off("chat-update");
+      socket.off(`chat-update/${selectedChat.id}`);
     };
   }, [handleMessagesUpdate, selectedChat, socket]);
 

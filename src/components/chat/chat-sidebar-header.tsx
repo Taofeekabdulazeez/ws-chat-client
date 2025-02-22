@@ -24,7 +24,7 @@ export default function ChatSidebarHeader({
 
       <div>
         <Link
-          to="#"
+          to="/"
           className={cn(
             buttonVariants({ variant: "ghost", size: "icon" }),
             "h-9 w-9"

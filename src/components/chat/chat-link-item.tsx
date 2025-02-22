@@ -10,26 +10,28 @@ import { useChatActivitySubscription } from "@/hooks/useChatActivitySubscription
 import { useMemo } from "react";
 import { CheckCheck } from "lucide-react";
 import clsx from "clsx";
+import { useChatStore } from "@/store/useChatStore";
 
 type ChatLinkItemProps = {
   chat: Chat;
 };
 
 export function ChatLinkItem({ chat }: ChatLinkItemProps) {
+  const setSelectedChat = useChatStore((state) => state.setSelectedChat);
   const onlineUsers = useAuthStore((state) => state.onlineUsers);
   const { typingIndicatorRef, lastMessageRef } =
     useChatActivitySubscription(chat);
   const { messages } = useMessageNotificationSubscription(chat);
-  console.log(messages);
   const authUser = useAuthStore((state) => state.authUser);
   const lastChatMessage = messages[chat?.messages.length - 1];
-  const numberOfUnreadMessages = useMemo(
-    () => messages.filter((message) => !message.isRead).length,
+  const unreadMessages = useMemo(
+    () => messages.filter((message) => !message.isRead),
     [messages]
   );
 
   return (
     <NavLink
+      onClick={() => setSelectedChat(chat)}
       to={chat?.id as string}
       className={cn(
         buttonVariants({ variant: "ghost", size: "xl" }),
@@ -71,9 +73,9 @@ export function ChatLinkItem({ chat }: ChatLinkItemProps) {
             {formatLastMessageDate(new Date(lastChatMessage!.timestamp))}
           </span>
         }
-        {numberOfUnreadMessages && (
+        {Boolean(unreadMessages.length) && (
           <span className="h-4 w-4 absolute right-8 bottom-4 bg-green-500 flex items-center justify-center rounded-full text-green-100 text-xs">
-            {numberOfUnreadMessages}
+            {unreadMessages.length}
           </span>
         )}
       </div>

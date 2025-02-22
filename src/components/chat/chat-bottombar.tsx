@@ -40,13 +40,10 @@ export default function ChatBottombar() {
     chatId: selectedChat.id,
   };
 
-  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLTextAreaElement>) =>
     setMessage(event.target.value);
-  };
-  const handleThumbsUp = () => {
-    sendMessage({ ...messageData, text: "👍" });
-    setMessage("");
-  };
+
+  const handleThumbsUp = () => sendMessage({ ...messageData, text: "👍" });
 
   const handleSend = () => {
     if (message.trim()) {
@@ -70,6 +67,7 @@ export default function ChatBottombar() {
     if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault();
       setMessage((prev) => prev + "\n");
+      return;
     }
     socket.emit("user-typing", recipientId);
   };
