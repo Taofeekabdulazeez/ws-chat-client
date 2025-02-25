@@ -7,6 +7,7 @@ export type Message = {
   chatId: string;
   isRead: boolean;
   isDelivered: boolean;
+  isLiked?: boolean;
 };
 
 export type User = {

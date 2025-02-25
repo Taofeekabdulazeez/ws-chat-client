@@ -14,6 +14,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useSelectedChat } from "@/hooks/useSelectedChat";
 import { Message } from "@/types";
 import clsx from "clsx";
+import { useState } from "react";
 
 type ChatMessageProps = {
   index: number;
@@ -25,11 +26,12 @@ const getMessageVariant = (messageName: string, selectedUserName: string) =>
 
 const actionIcons = [
   { icon: DotsVerticalIcon, type: "More" },
-  { icon: Forward, type: "Like" },
-  { icon: Heart, type: "Share" },
+  { icon: Forward, type: "Share" },
+  { icon: Heart, type: "Like" },
 ];
 
-export default function ChatMessage({ index, message }: ChatMessageProps) {
+export default function ChatMessage({ index, message: msg }: ChatMessageProps) {
+  const [message, setMessage] = useState<Message>(msg);
   const authUser = useAuthStore((state) => state.authUser);
   const selectedChat = useSelectedChat();
   const messageOwner =
@@ -75,21 +77,36 @@ export default function ChatMessage({ index, message }: ChatMessageProps) {
             )}
             {authUser?.id === message.senderId && (
               <CheckCheck
-                className={clsx("mt-2", { "stroke-blue-400": message.isRead })}
+                className={clsx("mt-2", { "stroke-blue-300": message.isRead })}
                 size={18}
               />
             )}
           </span>
+          {message.isLiked && (
+            <Heart
+              size={16}
+              className="fill-rose-500 stroke-transparent absolute -bottom-1 -right-1"
+            />
+          )}
         </ChatBubbleMessage>
         <ChatBubbleActionWrapper>
           {actionIcons.map(({ icon: Icon, type }) => (
             <ChatBubbleAction
               className="size-7"
               key={type}
-              icon={<Icon className="size-4" />}
-              onClick={() =>
-                console.log("Action " + type + " clicked for message " + index)
+              icon={
+                <Icon
+                  className={clsx("size-4", {
+                    "fill-rose-500 stroke-rose-500":
+                      type === "Like" && message.isLiked,
+                  })}
+                />
               }
+              onClick={() => {
+                if (type === "Like")
+                  setMessage((prev) => ({ ...prev, isLiked: !prev.isLiked }));
+                console.log("Action " + type + " clicked for message " + index);
+              }}
             />
           ))}
         </ChatBubbleActionWrapper>
