@@ -14,7 +14,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useSelectedChat } from "@/hooks/useSelectedChat";
 import { Message } from "@/types";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type ChatMessageProps = {
   index: number;
@@ -32,7 +32,10 @@ const actionIcons = [
 
 export default function ChatMessage({ index, message: msg }: ChatMessageProps) {
   const [message, setMessage] = useState<Message>(msg);
+  const toggleLike = () =>
+    setMessage((message) => ({ ...message, isLiked: !message.isLiked }));
   const authUser = useAuthStore((state) => state.authUser);
+  const socket = useAuthStore((state) => state.socket);
   const selectedChat = useSelectedChat();
   const messageOwner =
     message.senderId === selectedChat.recipient.id
@@ -44,6 +47,29 @@ export default function ChatMessage({ index, message: msg }: ChatMessageProps) {
       : authUser!.fullName,
     selectedChat.recipient.fullName
   );
+
+  // useEffect(() => {
+  //   if (
+  //     !message.isRead &&
+  //     message.chatId === selectedChat.id &&
+  //     authUser?.id !== message.senderId
+  //   )
+  //     socket.emit("read-messages", {
+  //       messagesId: [message.id],
+  //       receiverId: authUser?.id,
+  //     });
+  // }, [message, authUser?.id, socket, selectedChat.id]);
+
+  useEffect(() => {
+    socket.on(`message/${message.id}/toggle-like`, () => {
+      toggleLike();
+      console.log("toggle-like-event");
+    });
+
+    return () => {
+      socket.off(`message/${message.id}/toggle-like`);
+    };
+  }, [socket, message.id]);
 
   return (
     <motion.div
@@ -103,8 +129,10 @@ export default function ChatMessage({ index, message: msg }: ChatMessageProps) {
                 />
               }
               onClick={() => {
-                if (type === "Like")
-                  setMessage((prev) => ({ ...prev, isLiked: !prev.isLiked }));
+                if (type === "Like") {
+                  // toggleLike();
+                  socket.emit("like-message", message);
+                }
                 console.log("Action " + type + " clicked for message " + index);
               }}
             />
